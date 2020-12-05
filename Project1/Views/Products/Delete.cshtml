@@ -1,0 +1,90 @@
+﻿@model Project1.Models.Product
+
+@{
+    ViewBag.Title = "Delete " + Model.ProductName;
+}
+<h3>Are you sure you want to delete @Model.ProductName?</h3>
+<hr />
+<br />
+<div class="flex-container">
+    <div id="zoom" style="background-image: url(@(Url.Content(Constants.ImagePath) + Model.Image))">
+        <img src="@(Url.Content(Constants.ImagePath) + Model.Image)" id="preview" />
+    </div>
+    <div class="details">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.ProductName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ProductName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Category.CategoryName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Category.CategoryName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+
+            @{
+                if (Model.OnSale != false)
+                {
+                    if (Model.Discount > 0)
+                    {
+                        var discount = 1 - Convert.ToDecimal(Model.Discount) / 100;
+                        var price = Decimal.Round(discount * Model.Price, 2);
+
+                        <dd>
+                            <span class="discount">
+                                $@price
+                                (@Html.DisplayFor(model => model.Discount) off)
+                                <span>@Html.DisplayFor(model => model.Price)</span>
+                            </span>
+                        </dd>
+                    }
+                    <dt>
+                        Sale
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.SaleStart)
+                        -
+                        @Html.DisplayFor(model => model.SaleEnd)
+                    </dd>
+                }
+                else
+                {
+                    <dd>
+                        @Html.DisplayFor(model => model.Price)
+                    </dd>
+
+                }
+            }
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" />
+            </div>
+        }
+    </div>
+</div>
+<br /><br />
+<a href="@Url.Action("Details", new { id = Model.Path })">Return to product</a>

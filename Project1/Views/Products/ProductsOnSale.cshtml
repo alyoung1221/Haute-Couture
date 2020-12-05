@@ -1,0 +1,104 @@
+﻿@model Project1.ViewModels.ProductIndexViewModel
+@using PagedList.Mvc
+@{
+    Layout = null;
+    ViewBag.Title = (!String.IsNullOrWhiteSpace(Model.category)) ? Capitalize.CapitalizeWords(Model.category.Replace("-", " ")) + " Sales" : "Sales";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title | Haut&#232; Couture</title>
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Hautè Couture", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.RouteLink("Shop", "ProductsIndex")</li>
+                        <li>@Html.ActionLink("Shop by Category", "Index", "Categories")</li>
+                        <li>@Html.RouteLink("Sales", "ProductsOnSale")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    </ul>
+                    @using (Html.BeginRouteForm("ProductsOnSale", FormMethod.Get, new { @class = "navbar-form navbar-left", @name = "searchbar", @novalidate = "true" }))
+                    {
+                        <div class="form-group">
+                            @Html.TextBox("search", null, new { @type = "search", @required = "true", @placeholder = "Search products...", @title = "Search products" })
+                        </div>
+                    }
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </nav>
+        <main class="container body-content">
+            <h2>@ViewBag.Title</h2>
+            @{
+                if (String.IsNullOrWhiteSpace(Model.search))
+                {
+                    <p>@Model.Products.TotalItemCount @(Model.Products.TotalItemCount != 1 ? "products" : "product")</p>
+                }
+                else
+                {
+                    <p>Your search for @Model.search found @Model.Products.TotalItemCount @(Model.Products.TotalItemCount != 1 ? "products" : "product")</p>
+                }
+            }
+            <br />
+            <div id="menubar" class="flex-container">
+                @using (Html.BeginRouteForm("ProductsOnSale", FormMethod.Get, htmlAttributes: new { @name = "filters" }))
+                {
+                    @Html.Partial("FiltersPartial", Model)
+                }
+                <span class="mobile page"><br /><br /></span>
+                <div class="desktop">
+                    @(Model.Products.PageCount < Model.Products.PageNumber ? 0 : Model.Products.PageNumber) of @Model.Products.PageCount
+                    @Html.PagedListPager(Model.Products, page => Url.Action("ProductsOnSale", new { page, size = Model.size, search = Model.search, order = Model.order }))
+                </div>
+            </div>
+            @if (Model != null)
+            {
+                SelectList pgSizes = PageSizes.PgSizes;
+                <div class="sizes flex-container">
+                    <div class="mobile" style="margin-right: 40px;">
+                        @(Model.Products.PageCount < Model.Products.PageNumber ? 0 : Model.Products.PageNumber) of @Model.Products.PageCount
+                        @Html.PagedListPager(Model.Products, page => Url.Action("ProductsOnSale", new { page, size = Model.size, search = Model.search, order = Model.order }))
+                    </div>
+                    <div class="sizes-container">
+                        @Html.DropDownList("size", pgSizes, new { @id = "pgSizes" })
+                        <span style="font-weight: 700;">items per page</span>
+                    </div>
+                </div>
+            }
+            @Html.Partial("ProductsPartial", Model)
+        </main>
+    </div>
+    <footer>
+        <hr />
+        <p>&copy; @DateTime.Now.Year Hautè Couture</p>
+    </footer>
+    <noscript>
+        <div class="overlay">
+            <div class="overlay-content">
+                <p>Please enable <a href="https://enablejavascript.co/">JavaScript</a> and reload this page for optimum website functionality.</p>
+            </div>
+        </div>
+    </noscript>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="~/Scripts/js.js"></script>
+</body>
+</html>

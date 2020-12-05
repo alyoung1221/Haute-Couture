@@ -1,0 +1,178 @@
+﻿@model IEnumerable<Project1.Models.Product>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haut&#232; Couture</title>
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Hautè Couture", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.RouteLink("Shop", "ProductsIndex")</li>
+                        <li>@Html.ActionLink("Shop by Category", "Index", "Categories")</li>
+                        <li>@Html.RouteLink("Sales", "ProductsOnSale")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    </ul>
+                    @using (Html.BeginRouteForm("ProductsIndex", FormMethod.Get, new { @class = "navbar-form navbar-left", @name = "searchbar", @novalidate = "true" }))
+                    {
+                        <div class="form-group">
+                            @Html.TextBox("search", null, new { @type = "search", @required = "true", @placeholder = "Search products...", @title = "Search products" })
+                        </div>
+                    }
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </nav>
+        <main class="container body-content">
+            <div class="hero">
+                <img src="@(Url.Content(Constants.ImagePath) + "dotted-red-dress.jpg")" alt="Spring Sale, 15%+ off select items" />
+                <div class="text-overlay">
+                    <h1>Spring Sale</h1>
+                    <i>15%+ off select items</i>
+                </div>
+                <div>
+                    <a href="@Url.Action("ProductsOnSale", "Products")" class="b-r">Shop Sales &rsaquo;</a>
+                </div>
+            </div>
+            <div class="row heroes" id="first">
+                <h3>Shop the Collection</h3>
+                <div class="flex-container">
+                    <div>
+                        <a href="@Url.Action("Index", "Products", new { category = "women" })">
+                            <img src="@(Url.Content(Constants.ImagePath) + "high-fashion-woman.jpg")" alt="Shop women" />
+                        </a>
+                        <a href="@Url.Action("Index", "Products", new { category = "women" })" class="shop">Shop Women &raquo;</a>
+                    </div>
+                    <div>
+                        <a href="@Url.Action("Index", "Products", new { category = "teens" })">
+                            <img src="@(Url.Content(Constants.ImagePath) + "teens.png")" alt="Shop Teens" />
+                        </a>
+                        <a class="shop" href="@Url.Action("Index", "Products", new { category = "teens" })">Shop Teens &raquo;</a>
+                    </div>
+                    <div>
+                        <a href="@Url.Action("Index", "Products", new { category = "accessories" })">
+                            <img src="@(Url.Content(Constants.ImagePath) + "accessories.jpg")" alt="Shop Accessories" />
+                        </a>
+                        <a class="shop" href="@Url.Action("Index", "Products", new { category = "accessories" })">Shop Accessories &raquo;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row heroes">
+                <h3>New In</h3>
+                <div id="gallery" class="flex-container">
+                    @foreach (var item in Model)
+                    {
+                        <figure>
+                            <a href="@Url.Action("Details", "Products", new { id = item.Path })">
+                                @{
+                                    if (String.IsNullOrEmpty(item.Image))
+                                    {
+                                        <img src="@(Url.Content(Constants.ImagePath) + "no-image.png")" alt="Image Not Found">
+                                    }
+                                    else
+                                    {
+                                        <img src="@(Url.Content(Constants.ImagePath) + item.Image)">
+                                    }
+                                }
+                            </a>
+                            <figcaption>
+                                <a href="@Url.Action("Details", "Products", new { id = item.Path })">
+                                    @Html.DisplayFor(modelItem => item.ProductName)
+                                </a>
+                                @if (item.OnSale != false)
+                                {
+                                    if (item.Discount > 0)
+                                    {
+                                        var discount = 1 - Convert.ToDecimal(item.Discount) / 100;
+                                        var price = Decimal.Round(discount * item.Price, 2);
+
+                                        <p class="discount">
+                                            $@price
+                                            (@Html.DisplayFor(modelItem => item.Discount) off)
+                                            <span>@Html.DisplayFor(modelItem => item.Price)</span>
+                                        </p>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>@Html.DisplayFor(modelItem => item.Price)</p>
+                                }
+                            </figcaption>
+                        </figure>
+                    }
+                </div>
+            </div>
+            <div class="row heroes">
+                <h3>Receive Exclusive Offers &amp; Updates</h3>
+                <form id="subscribe" name="subscribe" method="post" novalidate>
+                    <input type="email" name="email" id="email" placeholder="E-mail Address" />
+                    <input type="submit" value="Sign Up" />
+                    <p id="success"></p>
+                </form>
+            </div>
+        </main>
+    </div>
+    <footer>
+        <hr />
+        <p>&copy; 2020 Hautè Couture</p>
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="~/Scripts/js.js"></script>
+    <script>
+        $("#subscribe").validate({
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                }
+            },
+            messages: {
+                email: {
+                    required: "Please enter your e-mail address."
+                }
+            },
+            errorPlacement: function (error) {
+                if ($("#email-error").length == 0) {
+                    error.insertAfter($("[name=subscribe] input[type='submit']"));
+                }
+            },
+        });
+
+        $("#subscribe").submit(function (e) {
+            if ($("#email-error").length == 0 || document.getElementById("email-error").style.display == "none") {
+                e.preventDefault();
+                $("[name='subscribe'] input").prop("readonly", true);
+                $("#success").html("Thanks for subscribing to Hautè Couture.");
+            }
+        });
+    </script>
+    <noscript>
+        <div class="overlay">
+            <div class="overlay-content">
+                <p>Please enable <a href="https://enablejavascript.co/">JavaScript</a> and reload this page for optimum website functionality.</p>
+            </div>
+        </div>
+    </noscript>
+</body>
+</html>

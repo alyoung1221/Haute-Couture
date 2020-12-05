@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Project1.Models.Category>
+
+@{
+    ViewBag.Title = "Shop By Category";
+}
+
+<div class="flex-container" id="titlebar">
+    <h2>@ViewBag.Title</h2>
+    @if (Request.IsAuthenticated)
+    {
+        @Html.ActionLink("New Category", "Create", null, new { @id = "create" })
+    }
+</div>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.CategoryName, "Index", "Products", new { category = item.CategoryName }, null)
+                </td>
+                <td class="menubar">
+                    <span>@Html.ActionLink("Details", "Details", new { id = item.Path })</span>
+
+                    @if (Request.IsAuthenticated)
+                    {
+                        <span>| @Html.ActionLink("Edit", "Edit", new { id = item.Path })</span>
+                        <span>| @Html.ActionLink("Delete", "Delete", new { id = item.Path })</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

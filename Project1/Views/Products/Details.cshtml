@@ -1,0 +1,98 @@
+﻿@model Project1.Models.Product
+
+@{
+    ViewBag.Title = Model.ProductName;
+}
+<h3>@ViewBag.Title</h3>
+<hr />
+<br />
+<div class="flex-container">
+    @{
+        if (String.IsNullOrEmpty(Model.Image))
+        {
+            <img src="@(Url.Content(Constants.ImagePath) + "no-image.png")" alt="Image Not Found" width="240">
+        }
+        else
+        {
+            <div id="zoom" style="background-image: url(@(Url.Content(Constants.ImagePath) + Html.DisplayFor(model => model.Image)))">
+                <img src="@(Url.Content(Constants.ImagePath) + Html.DisplayFor(model => model.Image))" />
+            </div>
+        }
+    }
+    <dl class="dl-horizontal details">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProductName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Category.CategoryName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category.CategoryName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        @{
+            if (Model.OnSale != false)
+            {
+                if (Model.Discount > 0)
+                {
+                    var discount = 1 - Convert.ToDecimal(Model.Discount) / 100;
+                    var price = Decimal.Round(discount * Model.Price, 2);
+
+                    <dd>
+                        <span class="discount">
+                            $@price
+                            (@Html.DisplayFor(model => model.Discount) off)
+                            <span>@Html.DisplayFor(model => model.Price)</span>
+                        </span>
+                    </dd>
+                }
+                <dt>
+                    Sale
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.SaleStart)
+                    -
+                    @Html.DisplayFor(model => model.SaleEnd)
+                </dd>
+            }
+            else
+            {
+                <dd>
+                    @Html.DisplayFor(model => model.Price)
+                </dd>
+
+            }
+        }
+    </dl>
+</div>
+<br /><br />
+<p>
+    @if (Request.IsAuthenticated)
+    {
+        <span>@Html.ActionLink("Edit", "Edit", new { id = Model.Path }) | </span>
+        <span>@Html.ActionLink("Delete", "Delete", new { id = Model.Path })</span>
+    }
+    else
+    {
+        @Html.ActionLink("Return to products", "Index")
+    }
+</p>

@@ -1,0 +1,27 @@
+﻿@model Project1.ViewModels.ProductIndexViewModel
+
+    <label>Categories</label>
+    @Html.DropDownListFor(vm => vm.category, Model.categories)
+    <span class="mobile"><br /><br /></span>
+    <span class="desktop">&nbsp;</span>
+    <label>Price</label>
+    @{
+        var filters = new List<SelectListItem>();
+
+        filters.Add(new SelectListItem { Text = "- Select one -", Value = "", Disabled = true, Selected = true });
+
+        foreach (var filter in Model.filters)
+        {
+            filters.Add(new SelectListItem
+            {
+                Value = filter.Value,
+                Text = filter.Key
+            });
+        }
+        @Html.DropDownListFor(vm => vm.order, filters)
+    }
+    <span class="mobile"><br /><br /></span>
+    <span class="desktop">&nbsp;&nbsp;</span>
+    <input type="button" name="apply" value="Apply" title="Apply" />
+    <input type="reset" name="reset" value="Clear" title="Clear" />
+    <input type="hidden" name="Search" id="Search" value="@Model.search" />

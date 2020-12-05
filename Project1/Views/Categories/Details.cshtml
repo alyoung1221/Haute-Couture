@@ -1,0 +1,46 @@
+﻿@model Project1.Models.Category
+
+@{
+    ViewBag.Title = Model.CategoryName;
+}
+<h2>@ViewBag.Title</h2>
+<hr />
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(model => model.CategoryName)
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.CategoryName)
+    </dd>
+
+    @if (ViewBag.products.Count > 0)
+    {
+        <dt style="margin-top: 20px;">
+            Recently Added
+        </dt>
+
+        <dd style="margin-top: 20px;">
+            <ul class="products">
+                @{
+                    foreach (var product in ViewBag.products)
+                    {
+                        <li>
+                            <a href="@Url.Action("Details", "Products", new { id = product.Path })">@product.ProductName</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </dd>
+    }
+</dl>
+<p>
+    @if (Request.IsAuthenticated)
+    {
+        <span>@Html.ActionLink("Edit", "Edit", new { id = Model.Path }) |</span>
+        <span>@Html.ActionLink("Delete", "Delete", new { id = Model.Path })</span>
+    }
+    else {
+        @Html.ActionLink("Return to categories", "Index")
+    }
+</p>

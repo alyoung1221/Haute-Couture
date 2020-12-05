@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title | Haut&#232; Couture</title>
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Hautè Couture", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.RouteLink("Shop", "ProductsIndex")</li>
+                        <li>@Html.ActionLink("Shop by Category", "Index", "Categories")</li>
+                        <li>@Html.RouteLink("Sales", "ProductsOnSale")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    </ul>
+
+                    @using (Html.BeginRouteForm("ProductsIndex", FormMethod.Get, new { @class = "navbar-form navbar-left", @name = "searchbar", @novalidate = "true" }))
+                    {
+                        <div class="form-group">
+                            @Html.TextBox("search", null, new { @type = "search", @required = "true", @placeholder = "Search products...", @title = "Search products" })
+                        </div>
+                    }
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </nav>
+        <main class="container body-content">
+            @RenderBody()
+        </main>
+    </div>
+    <footer>
+        <hr />
+        <p>&copy; @DateTime.Now.Year Hautè Couture</p>
+    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="~/Scripts/js.js"></script>
+    <noscript>
+        <div class="overlay">
+            <div class="overlay-content">
+                <p>Please enable <a href="https://enablejavascript.co/">JavaScript</a> and reload this page for optimum website functionality.</p>
+            </div>
+        </div>
+    </noscript>
+</body>
+</html>

@@ -1,0 +1,44 @@
+﻿@model Project1.ViewModels.ProductIndexViewModel
+
+<div id="gallery" class="flex-container">
+    @foreach (var item in Model.Products)
+    {
+        <figure>
+            <a href="@Url.Action("Details", new { id = item.Path })">
+                @{
+                    if (String.IsNullOrEmpty(item.Image))
+                    {
+                        <img src="@(Url.Content(Constants.ImagePath) + "no-image.png")" alt="Image Not Found">
+                    }
+                    else
+                    {
+                        <img src="@(Url.Content(Constants.ImagePath) + item.Image)">
+                    }
+                }
+            </a>
+            <figcaption>
+                <a href="@Url.Action("Details", new { id = item.Path })">
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </a>
+                @if (item.OnSale != false)
+                {
+                    if (item.Discount > 0)
+                    {
+                        var discount = 1 - Convert.ToDecimal(item.Discount) / 100;
+                        var price = Decimal.Round(discount * item.Price, 2);
+
+                        <p class="discount">
+                            $@price
+                            (@Html.DisplayFor(modelItem => item.Discount) off)
+                            <span>@Html.DisplayFor(modelItem => item.Price)</span>
+                        </p>
+                    }
+                }
+                else
+                {
+                    <p>@Html.DisplayFor(modelItem => item.Price)</p>
+                }
+            </figcaption>
+        </figure>
+    }
+</div>
